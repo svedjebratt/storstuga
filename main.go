@@ -114,7 +114,7 @@ func loadConfig() (config, error) {
 		CheckTargets:      splitCSV(getenvDefault("CHECK_TARGETS", "1.1.1.1:53,8.8.8.8:53")),
 		FailureThreshold:  mustInt("FAILURE_THRESHOLD", 3),
 		RestartCooldown:   mustDuration("RESTART_COOLDOWN", "30m"),
-		RestartDelay:      mustDuration("RESTART_DELAY", "5s"),
+		RestartDelay:      mustDuration("RESTART_DELAY", "30s"),
 		ShellyOffURL:      os.Getenv("SHELLY_OFF_URL"),
 		ShellyOnURL:       os.Getenv("SHELLY_ON_URL"),
 		WebhookToken:      os.Getenv("WEBHOOK_TOKEN"),
