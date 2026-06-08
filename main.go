@@ -229,10 +229,10 @@ func checkHTTP(ctx context.Context, target string, timeout time.Duration) error 
 }
 
 func restartViaShelly(ctx context.Context, client *http.Client, cfg config) error {
-	log.Printf("would power off router via Shelly: %s", cfg.ShellyOffURL)
-	// if err := doRequest(ctx, client, cfg.ShellyOffURL); err != nil {
-	// 	return fmt.Errorf("off request: %w", err)
-	// }
+	log.Printf("power off router via Shelly: %s", cfg.ShellyOffURL)
+	if err := doRequest(ctx, client, cfg.ShellyOffURL); err != nil {
+		return fmt.Errorf("off request: %w", err)
+	}
 	t := time.NewTimer(cfg.RestartDelay)
 	defer t.Stop()
 	select {
@@ -240,10 +240,10 @@ func restartViaShelly(ctx context.Context, client *http.Client, cfg config) erro
 		return ctx.Err()
 	case <-t.C:
 	}
-	log.Printf("would power on router via Shelly: %s", cfg.ShellyOnURL)
-	// if err := doRequest(ctx, client, cfg.ShellyOnURL); err != nil {
-	// 	return fmt.Errorf("on request: %w", err)
-	// }
+	log.Printf("power on router via Shelly: %s", cfg.ShellyOnURL)
+	if err := doRequest(ctx, client, cfg.ShellyOnURL); err != nil {
+		return fmt.Errorf("on request: %w", err)
+	}
 	return nil
 }
 
