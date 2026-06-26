@@ -128,8 +128,8 @@ func loadConfig() (config, error) {
 	if cfg.FailureThreshold < 1 {
 		return cfg, fmt.Errorf("FAILURE_THRESHOLD must be >= 1")
 	}
-	if cfg.ShellyOffURL == "" || cfg.ShellyOnURL == "" {
-		return cfg, fmt.Errorf("SHELLY_OFF_URL and SHELLY_ON_URL are required")
+	if cfg.ShellyOffURL == "" {
+		return cfg, fmt.Errorf("SHELLY_OFF_URL is required")
 	}
 	return cfg, nil
 }
@@ -233,16 +233,13 @@ func restartViaShelly(ctx context.Context, client *http.Client, cfg config) erro
 	if err := doRequest(ctx, client, cfg.ShellyOffURL); err != nil {
 		return fmt.Errorf("off request: %w", err)
 	}
+	log.Printf("waiting %s for router cool off before resuming polling", cfg.RestartDelay)
 	t := time.NewTimer(cfg.RestartDelay)
 	defer t.Stop()
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
 	case <-t.C:
-	}
-	log.Printf("power on router via Shelly: %s", cfg.ShellyOnURL)
-	if err := doRequest(ctx, client, cfg.ShellyOnURL); err != nil {
-		return fmt.Errorf("on request: %w", err)
 	}
 	return nil
 }
